@@ -1,213 +1,854 @@
 # Pressure Out
 
-> **Your Work. Your Chaos. Your People.**  
-> *Work is serious. Talking about it doesn't have to be.*
+### Your Work. Your Chaos. Your People.
 
-**Implementation Status:** Implementation documented through Phase 12.3, including Windows local development, security hardening, and qualification tooling.  
-**Project Stage:** Local development and qualification; production deployment has not been performed.  
+**Work is serious. Talking about it doesn't have to be.**
 
-## 1. Project Purpose
+Pressure Out is a privacy-first workplace social platform where people can share workplace experiences, discuss professional challenges, express frustrations, exchange office humour, share resignation stories, and create AI-assisted memes without being required to reveal their real-world identity.
 
-**Pressure Out** is a work-focused social platform dedicated to workplace discussions, candid rants, office humour, salary and career conversations, structured resignation stories, and AI-assisted workplace memes. Its foundational product principle is that **people must be able to express themselves without being required to reveal their real-world identity**.
+The platform creates a space for honest workplace conversations through pseudonymous identities, anonymous participation, optional professional profiles, community discussions, and privacy-conscious workplace insights.
 
-This repository contains:
+> Your identity is optional. Your experiences matter.
 
-1. **Product and Architecture Documentation (`docs/`)** - Product requirements, user journeys, system architecture, database design, API specifications, identity and privacy, AI Meme Studio, multilingual support, moderation, operations, roadmaps, and architecture diagrams.
+---
 
-2. **Application Implementation (`backend/`, `frontend/`)** - FastAPI backend, modular domain services, PostgreSQL migrations, authentication, privacy controls, workplace social features, AI-assisted meme workflows, moderation, translation, and Next.js frontend.
+## Project Overview
 
-3. **Development and Operations (`docker-compose*.yml`, `.env*.example`, `scripts/`)** - Docker Compose configurations, Windows PowerShell automation, database backup and restore, qualification tooling, automated smoke checks, and operational documentation.
+| Attribute               | Details                                                                     |
+| ----------------------- | --------------------------------------------------------------------------- |
+| Project                 | Pressure Out                                                                |
+| Category                | Workplace Social Network                                                    |
+| Development Stage       | Local Development & Qualification                                           |
+| Implementation Coverage | Phases 1–12.3                                                               |
+| Frontend                | Next.js, React, TypeScript                                                  |
+| Backend                 | Python, FastAPI                                                             |
+| Database                | PostgreSQL 16                                                               |
+| Caching & Rate Limiting | Redis                                                                       |
+| Localization            | English, Malayalam, Hindi, Tamil, Spanish                                   |
+| Deployment Strategy     | Docker Compose / Windows Local Development                                  |
+| Repository              | [BibinBinoy777/pressure-out](https://github.com/BibinBinoy777/pressure-out) |
 
-## 2. Technology Stack
+**Current status:** The repository contains application code, architecture documentation, testing infrastructure and operational tooling through Phase 12.3. Production deployment has not yet been performed.
 
-| Layer | Technology Baseline |
-| :--- | :--- |
-| **Frontend** | Next.js (App Router), React 19, TypeScript (strict mode), Tailwind CSS, Vitest |
-| **Backend** | Python 3.11 / 3.12, FastAPI, Pydantic, SQLAlchemy 2.x (Async), Alembic, Pytest, Ruff |
-| **Database** | PostgreSQL 16 (`pgcrypto`, `citext`, `ltree`, `pg_trgm`), UTF-8 encoding |
-| **Local Orchestration** | Docker Compose (`db`, `backend`, `frontend` with health checks and named volume persistence) |
+---
 
-## 3. Prerequisites
+# 1. The Vision
 
-* **Docker Compose Workflow (Recommended):** Docker Engine 24+ and Docker Compose v2+.
-* **Direct Host Workflow:**
-  * Python 3.11+ (`pip`, `venv`)
-  * Node.js 18.20+ or 20+ (`npm`)
-  * PostgreSQL 16+ running locally (or via the `db` service in `docker-compose.yml`)
+Workplaces influence people's lives, careers, finances, relationships, and mental well-being. Yet many people hesitate to discuss their workplace experiences openly because of professional identity, organizational pressure, privacy concerns, or fear of consequences.
 
+Pressure Out aims to change that.
 
+The platform provides a digital space where people can:
 
-## 5. Environment Configuration
+* Express workplace frustrations without revealing their real identity.
+* Share stories about toxic workplace environments and difficult experiences.
+* Discuss salaries, career progression, management and professional challenges.
+* Connect with people facing similar workplace situations.
+* Share funny workplace moments, memes and office humour.
+* Tell resignation stories and discuss reasons behind career transitions.
+* Contribute to privacy-preserving aggregated workplace insights.
 
-1. Copy the template environment file:
-   ```bash
-   cp .env.example .env
-   ```
-2. Review `.env`. All defaults in `.env.example` use safe development-only placeholders:
-   * **Database:** `DATABASE_URL=postgresql+asyncpg://po_dev_user:po_dev_local_only_password_change_me@localhost:5432/pressure_out_dev`
-   * **Browser -> Backend URL:** `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000`
-   * **Container SSR -> Backend URL:** `INTERNAL_API_BASE_URL=http://backend:8000` (inside Docker Compose) or `http://localhost:8000` (on host).
-   * **Offline AI / Translation Defaults:** `AI_CAPTION_PROVIDER=disabled`, `AI_IMAGE_PROVIDER=disabled`, `TRANSLATION_PROVIDER=disabled`. No external API keys are required to start or test the application foundation.
+The guiding principle is simple:
 
-## 6. Starting the Application Locally
+**People should be able to discuss their professional lives without being forced to expose their personal identities.**
 
-### 6.1 Starting with Docker Compose (Recommended)
-Start PostgreSQL 16, the FastAPI backend (which automatically runs `alembic upgrade head`), and the Next.js frontend:
+---
+
+# 2. Core Product Principles
+
+### 2.1 Privacy-First Identity
+
+Pressure Out does not require users to publish under their real-world identity.
+
+Users can choose their identity mode for individual posts:
+
+* **Pseudonymous:** Participate using a public pseudonym.
+* **Anonymous:** Share content anonymously within the community.
+* **Professional:** Participate through an optional professional profile.
+
+Identity selection is designed to support different participation needs without making real-world identity disclosure a requirement.
+
+### 2.2 Freedom of Expression
+
+The platform supports honest workplace conversations, including criticism, personal experiences, workplace humour and difficult professional situations.
+
+Freedom of expression is balanced with moderation, privacy protection, reporting mechanisms and abuse-prevention safeguards.
+
+### 2.3 Community Over Outrage
+
+Feeds and discovery features are designed to encourage meaningful discussions rather than simply maximizing outrage or engagement.
+
+### 2.4 Privacy-Preserving Insights
+
+Aggregated workplace insights use consent-based contributions, minimum cohort thresholds and suppression rules to reduce the possibility of identifying individual contributors.
+
+### 2.5 Technology for Human Expression
+
+AI-assisted meme creation, multilingual support and content translation are intended to make workplace expression more accessible and engaging.
+
+---
+
+# 3. Key Features
+
+## 3.1 Workplace Social Networking
+
+Core social functionality includes:
+
+* Creating workplace discussion posts.
+* Sharing personal experiences and opinions.
+* Community-based discussions.
+* Comments and threaded conversations.
+* Voting and reactions.
+* Bookmarks and saved posts.
+* Notifications and engagement features.
+* Individual user profiles.
+* Topic discovery and search.
+
+## 3.2 Multiple Identity Modes
+
+Users can select their preferred identity mode when publishing content.
+
+The identity system supports:
+
+* Pseudonymous participation.
+* Anonymous participation.
+* Optional professional profiles.
+* Identity-aware content serialization.
+* Privacy isolation between users.
+* Anonymous author protection.
+* Interaction restrictions and privacy controls.
+
+## 3.3 Community System
+
+Community functionality includes:
+
+* Community discovery.
+* Community membership.
+* Community-specific discussions.
+* Community rules.
+* Moderation roles and permissions.
+* Community-based content organization.
+
+## 3.4 Intelligent Feeds and Discovery
+
+The platform includes:
+
+* Latest feed.
+* Popular feed.
+* Following feed.
+* Explore and discovery.
+* Topic following and muting.
+* Search functionality.
+* Saved searches and content preferences.
+* Anti-outrage-oriented ranking mechanisms.
+
+## 3.5 AI Meme Studio
+
+The AI Meme Studio is one of Pressure Out's signature features.
+
+It enables users to turn workplace experiences into memes and visual expressions.
+
+Implemented capabilities include:
+
+* Workplace meme templates.
+* Caption editing.
+* AI-assisted caption suggestions.
+* Multilingual caption support.
+* Image generation job management.
+* Asynchronous job polling and cancellation.
+* Meme previews.
+* Alternative-text editing.
+* Asset downloads.
+* Community publishing.
+* Identity-aware publishing.
+
+The backend uses provider-neutral adapters for caption and image generation.
+
+Local mock providers and disabled-provider configurations support development without requiring external AI API credentials.
+
+The deterministic template renderer also supports locally generated workplace memes.
+
+## 3.6 Trust, Safety and Moderation
+
+Trust and safety functionality includes:
+
+* Content reporting.
+* Moderation queues.
+* Moderation actions.
+* Moderation appeals.
+* User blocking and muting.
+* Privacy-aware moderation views.
+* Audit event recording.
+* High-severity reporting safeguards.
+* Abuse-prevention mechanisms.
+* Separation of duties in moderation appeals.
+
+The system is designed to protect users without unnecessarily exposing anonymous identities.
+
+## 3.7 Multilingual Experience
+
+The application includes five UI localization catalogs:
+
+| Language  | Locale |
+| --------- | ------ |
+| English   | `en`   |
+| Malayalam | `ml`   |
+| Hindi     | `hi`   |
+| Tamil     | `ta`   |
+| Spanish   | `es`   |
+
+Multilingual functionality includes:
+
+* Externalized UI strings.
+* Locale switching.
+* Unicode normalization.
+* Translation provider adapters.
+* Post translation.
+* Comment translation.
+* Translation caching.
+* Source-version-based cache invalidation.
+* Preservation of original content.
+
+The architecture is designed to support additional languages.
+
+## 3.8 Workplace Experiences and Resignation Stories
+
+Pressure Out includes dedicated features for sharing structured workplace experiences.
+
+Implemented capabilities include:
+
+* Workplace experience categories.
+* Resignation stories.
+* Structured resignation reasons.
+* Optional workplace metadata.
+* Multiple identity modes.
+* Consent-based workplace contributions.
+* Aggregated workplace statistics.
+
+## 3.9 Privacy-Safe Workplace Insights
+
+The workplace insights engine uses structured, consented contributions rather than treating public workplace narratives as automatically available statistical data.
+
+Its safeguards include:
+
+* Minimum cohort size of 10 for general metrics.
+* Minimum cohort size of 20 for sensitive metrics.
+* Complementary small-bucket suppression.
+* Coarse sample-size banding.
+* Limited simultaneous filter dimensions.
+* No employer leaderboards.
+
+These measures help reduce the risk of identifying individual contributors through aggregated information.
+
+---
+
+# 4. System Architecture
+
+Pressure Out follows a modular application architecture.
+
+### High-Level Architecture
+
+```text
+                    PRESSURE OUT
+                          |
+              +-----------+-----------+
+              |                       |
+         FRONTEND                 BACKEND
+              |                       |
+        Next.js / React           FastAPI
+        TypeScript                    |
+              |              +-------+-------+
+              |              |       |       |
+              |            API    Services  Workers
+              |              |       |       |
+              |              +-------+-------+
+              |                      |
+              |             +--------+--------+
+              |             |                 |
+              |         PostgreSQL           Redis
+              |             |                 |
+              |         SQLAlchemy       Rate Limiting
+              |         Alembic           & Caching
+              |                              
+              +-------------------------------+
+                          |
+                   Storage Layer
+                          |
+                 Local / S3 / R2
+```
+
+### Architectural Components
+
+**Frontend**
+
+* Next.js App Router.
+* React.
+* TypeScript.
+* Tailwind CSS.
+* Externalized localization.
+* Modular reusable components.
+
+**Backend**
+
+* FastAPI.
+* Python.
+* Pydantic.
+* SQLAlchemy 2.x asynchronous database access.
+* Alembic migrations.
+* Modular domain services.
+* Background workers.
+
+**Database**
+
+* PostgreSQL 16.
+* Async SQLAlchemy.
+* Database migrations.
+* PostgreSQL extensions.
+* Privacy-aware data relationships.
+
+**Infrastructure**
+
+* Docker Compose.
+* Redis.
+* Local filesystem storage.
+* S3-compatible object storage adapters.
+* Windows PowerShell development automation.
+
+---
+
+# 5. Technology Stack
+
+| Layer                 | Technology                                |
+| --------------------- | ----------------------------------------- |
+| Frontend Framework    | Next.js                                   |
+| UI Library            | React 19                                  |
+| Programming Language  | TypeScript                                |
+| Styling               | Tailwind CSS                              |
+| Frontend Testing      | Node.js / Vitest / Custom VM verification |
+| Backend Language      | Python 3.11 / 3.12                        |
+| Backend Framework     | FastAPI                                   |
+| Data Validation       | Pydantic                                  |
+| ORM                   | SQLAlchemy 2.x                            |
+| Database Migrations   | Alembic                                   |
+| Database              | PostgreSQL 16                             |
+| Database Extensions   | pgcrypto, citext, ltree, pg_trgm          |
+| Cache / Rate Limiting | Redis                                     |
+| Background Processing | Python Workers                            |
+| Image Processing      | Pillow and HarfBuzz-compatible rendering  |
+| Object Storage        | Local Filesystem / S3 / Cloudflare R2     |
+| Containers            | Docker and Docker Compose                 |
+| Backend Testing       | Pytest / unittest                         |
+| Code Quality          | Ruff / ESLint / TypeScript                |
+
+---
+
+# 6. Repository Structure
+
+```text
+Pressure-Out/
+|
+|-- README.md
+|-- .gitignore
+|-- .env.example
+|-- .env.local.example
+|
+|-- docker-compose.yml
+|-- docker-compose.local.yml
+|-- docker-compose.prod.yml
+|
+|-- backend/
+|   |
+|   |-- alembic/
+|   |   |-- versions/
+|   |   `-- env.py
+|   |
+|   |-- app/
+|   |   |
+|   |   |-- api/
+|   |   |   `-- v1/
+|   |   |
+|   |   |-- core/
+|   |   |-- database/
+|   |   |-- middleware/
+|   |   |
+|   |   |-- modules/
+|   |   |   |-- comments/
+|   |   |   |-- communities/
+|   |   |   |-- engagement/
+|   |   |   |-- feed/
+|   |   |   |-- identity/
+|   |   |   |-- memes/
+|   |   |   |-- moderation/
+|   |   |   |-- notifications/
+|   |   |   |-- posts/
+|   |   |   |-- translations/
+|   |   |   `-- workplace/
+|   |   |
+|   |   `-- workers/
+|   |
+|   |-- tests/
+|   |-- Dockerfile
+|   `-- pyproject.toml
+|
+|-- frontend/
+|   |
+|   |-- app/
+|   |-- components/
+|   |-- lib/
+|   |-- locales/
+|   |-- tests/
+|   |-- Dockerfile
+|   `-- package.json
+|
+|-- docs/
+|   |
+|   |-- architecture/
+|   |-- decisions/
+|   |-- development/
+|   |-- diagrams/
+|   |-- operations/
+|   |-- product/
+|   `-- roadmap/
+|
+|-- scripts/
+|   |
+|   |-- windows/
+|   |-- backup_restore_postgres.sh
+|   |-- performance_benchmark.py
+|   |-- qualify_postgres_staging.py
+|   `-- run_local_smoke_35.py
+|
+`-- storage/
+    `-- media/
+```
+
+---
+
+# 7. Getting Started
+
+Pressure Out supports Docker Compose development and direct host development.
+
+## 7.1 Prerequisites
+
+### Recommended: Docker Workflow
+
+* Docker Engine 24 or newer.
+* Docker Compose v2 or newer.
+* Git.
+
+### Direct Host Development
+
+* Python 3.11 or newer.
+* Node.js 18.20+ or 20+.
+* npm.
+* PostgreSQL 16 or newer.
+* Redis when using the Redis-backed local configuration.
+
+## 7.2 Clone the Repository
+
+```bash
+git clone https://github.com/BibinBinoy777/pressure-out.git
+
+cd pressure-out
+```
+
+## 7.3 Configure Environment Variables
+
+For the standard Docker Compose development workflow:
+
+```bash
+cp .env.example .env
+```
+
+On Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Review the configuration before starting the application.
+
+Important configuration categories include:
+
+* Application environment.
+* Database connection.
+* Backend and frontend URLs.
+* Redis configuration.
+* Storage backend.
+* AI provider settings.
+* Translation provider settings.
+* Meme generation limits.
+* Logging configuration.
+
+Development-only credentials must never be reused in production.
+
+## 7.4 Start with Docker Compose
+
+Build and start the development services:
+
 ```bash
 docker compose up --build
 ```
-* **Frontend Application:** `http://localhost:3000`
-* **Backend Health Check:** `http://localhost:8000/api/v1/health`
-* **OpenAPI Interactive Docs (Dev Mode):** `http://localhost:8000/api/v1/docs`
 
-To stop the services while preserving PostgreSQL data in the `pressure_out_pgdata` volume:
+Expected local endpoints:
+
+| Service           | Address                             |
+| ----------------- | ----------------------------------- |
+| Frontend          | http://localhost:3000               |
+| Backend           | http://localhost:8000               |
+| Backend Health    | http://localhost:8000/api/v1/health |
+| API Documentation | http://localhost:8000/api/v1/docs   |
+
+The API documentation is available in development mode and is disabled in production configuration.
+
+To stop the services:
+
 ```bash
 docker compose down
 ```
 
-### 6.2 Running the Backend Directly on the Host
+This preserves the named PostgreSQL data volume.
+
+**Warning:** Removing Docker volumes with `docker compose down -v` deletes the associated local database data.
+
+## 7.5 Windows Local Development
+
+For Windows 10/11 development, the repository includes a dedicated local configuration:
+
+```text
+docker-compose.local.yml
+.env.local.example
+scripts/windows/
+docs/development/WINDOWS_LOCAL_DEVELOPMENT.md
+```
+
+This setup is designed to support local development under:
+
+```text
+D:\PressureOut
+```
+
+It includes configuration for:
+
+* Local PostgreSQL 16.
+* Redis 7 with `noeviction`.
+* Configurable D: drive storage.
+* Local dependency caches.
+* PowerShell setup automation.
+* Service startup and shutdown.
+* Backend and frontend checks.
+* Local end-to-end smoke verification.
+* Backup and restore workflows.
+
+Follow the complete Windows setup guide:
+
+[`docs/development/WINDOWS_LOCAL_DEVELOPMENT.md`](docs/development/WINDOWS_LOCAL_DEVELOPMENT.md)
+
+Available automation scripts are located in:
+
+```text
+scripts/windows/
+```
+
+---
+
+# 8. Database Migrations
+
+Pressure Out uses Alembic for PostgreSQL schema management.
+
+From the backend directory:
+
 ```bash
 cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
-alembic upgrade head
-python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-### 6.3 Running the Frontend Directly on the Host
+Apply migrations:
+
 ```bash
-cd frontend
-npm install
-npm run dev
+alembic upgrade head
 ```
 
-## 7. Executing Database Migrations
+Check the current migration:
 
-From `backend/` (with PostgreSQL running and `DATABASE_URL` configured):
 ```bash
-# Apply migrations up to latest revision (establishes pgcrypto, citext, ltree, pg_trgm)
-alembic upgrade head
-
-# Check current migration revision
 alembic current
-
-# Roll back baseline migration (only drops extensions created by 0001; preserves pre-existing ones)
-alembic downgrade base
 ```
 
-## 8. Running Automated Tests & Quality Gates
+View migration history:
 
-### 8.1 Backend Tests & Linters (`backend/`)
+```bash
+alembic history
+```
+
+The migration system establishes PostgreSQL extension prerequisites and introduces domain schemas through subsequent development phases.
+
+---
+
+# 9. Running Tests
+
+The repository includes backend and frontend automated verification suites.
+
+## 9.1 Backend
+
+From `backend/`:
+
 ```bash
 cd backend
+```
 
-# Standard unittest discovery (works both offline and with full dev dependencies)
+Run unittest discovery:
+
+```bash
 PYTHONPATH=. python3 -m unittest discover -s tests -p "test_*.py" -v
+```
 
-# Pytest & Ruff (when dev dependencies are installed)
+Run Pytest:
+
+```bash
 pytest -v
+```
+
+Run Ruff:
+
+```bash
 ruff check .
 ```
 
-### 8.2 Frontend Tests, Linters & Type Checks (`frontend/`)
+## 9.2 Frontend
+
+From `frontend/`:
+
 ```bash
 cd frontend
+```
 
-# Offline-capable Node.js + Babel TypeScript/React AST + ESLint verification suite
+Run the offline-capable verification suite:
+
+```bash
 npm run test:vm
+```
 
-# Standard Vitest, TypeScript compiler, ESLint, and production build (when node_modules installed)
+Run standard frontend checks when dependencies are installed:
+
+```bash
 npm test
 npm run typecheck
 npm run lint
 npm run build
 ```
 
-## 9. Inspecting Service Logs & Troubleshooting
+## 9.3 End-to-End Local Qualification
 
-### 9.1 Inspecting Logs
-```bash
-# View live logs across all Docker Compose services
-docker compose logs -f
+The project includes a local smoke-test runner:
 
-# View structured JSON logs for the FastAPI backend only
-docker compose logs -f backend
+```text
+scripts/run_local_smoke_35.py
 ```
-Every backend log entry is emitted as single-line JSON containing `timestamp`, `level`, `logger`, `message`, and `correlation_id`, with passwords, session cookies, CSRF tokens, DSN passwords, recovery emails, and post/prompt bodies automatically scrubbed to `[REDACTED]`.
 
-### 9.2 Troubleshooting Common Startup Problems
-* **Frontend shows "Backend API Currently Unreachable":**
-  * Verify the FastAPI server is running on port `8000` (`curl -i http://127.0.0.1:8000/api/v1/health`).
-  * Ensure `NEXT_PUBLIC_API_BASE_URL` in `.env` matches the host/port reachable from your browser (`http://localhost:8000`), while `INTERNAL_API_BASE_URL` inside Docker Compose points to `http://backend:8000`.
-* **PostgreSQL port `5432` conflict on host:**
-  * If another local PostgreSQL instance is bound to `127.0.0.1:5432`, set `POSTGRES_PORT=5433` in `.env` and update `DATABASE_URL` accordingly.
-* **Resetting a corrupted local development database volume:**
-  * Run `docker compose down -v` (warning: destroys local dev database data) and re-run `docker compose up --build`.
+Windows automation is available through:
 
-## 10. Documented Phase 2 Implementation Decisions & Reconciliations
+```text
+scripts/windows/run-local-smoke.ps1
+```
 
-In accordance with Section 2 and Section 13 of the Phase 2 specification, all 24 Phase 1 specification documents in `docs/` are preserved intact, and the following minor directory path reconciliations between Phase 1's illustrative tree and Phase 2's target layout are recorded:
+Refer to the testing strategy and Windows development documentation for execution details.
 
-1. **Flattened Frontend Root (`frontend/app/` vs. `frontend/src/app/`):** Phase 2 adopts the top-level `frontend/app/`, `frontend/components/`, `frontend/lib/`, `frontend/locales/en/common.json`, and `frontend/tests/` structure specified in Phase 2 Section 4 rather than nesting under `frontend/src/`.
-2. **Explicit Backend Module Separation (`backend/app/config.py`, `logging_config.py`, `database/`, `middleware/`):** Phase 2 places `config.py` and `logging_config.py` at the top of `backend/app/` and names the database package `backend/app/database/` and middleware package `backend/app/middleware/` to match the Phase 2 Section 4 layout, while keeping `backend/app/core/` for shared error-envelope (`errors.py`) and Unicode (`unicode.py`) utilities.
-3. **Migration Scope Boundary (`0001_phase2_foundation_extensions.py`):** While `docs/architecture/DATABASE_DESIGN.md` specifies the complete 29-table target DDL across all 12 phases, Phase 2's initial migration strictly establishes only the PostgreSQL extension prerequisites (`pgcrypto`, `citext`, `ltree`, `pg_trgm`) and their ownership tracking table `_alembic_extension_ownership`, leaving domain tables to be introduced in Phases 3–11.
+---
 
-## Phase 8: AI Meme Studio (`0007_phase8_memes`)
+# 10. Security and Privacy
 
-- **Database Schema (`0007_phase8_ai_meme_studio.py`):** Adds `meme_templates` (seeded with 6 original CC0 workplace templates), `meme_assets`, `meme_jobs`, and `ai_provider_usage`, while linking published meme posts via `posts.meme_asset_id`.
-- **Always-On Server `TemplateRenderer`:** Uses Pillow + HarfBuzz (`raqm`) and installed Noto fonts (`NotoSans`, `NotoSansMalayalam`, `NotoSansDevanagari`, `NotoSansTamil`) to deterministically render multi-region captions in PNG and WebP even when external AI providers are disabled.
-- **Provider-Neutral AI Adapters:** Implements `CaptionProviderAdapter` and `ImageProviderAdapter` with `LocalMockCaptionProvider` / `LocalMockImageProvider` (explicitly marked `is_mock_provider: true`) and configurable daily quotas, concurrency limits, PII stripping, and a daily USD spend circuit breaker.
-- **Frontend Studio (`/meme-studio`):** Provides template browsing, multilingual caption editing, AI caption suggestions, asynchronous image job polling/cancellation, alt-text editing, asset download, and direct community publishing across all 3 identity modes.
+Security and privacy are foundational design requirements of Pressure Out.
 
-## Phase 9: Trust, Safety, Reporting, Moderation & Abuse Prevention (`0008_phase9_moderation`)
+### Authentication and Identity
 
-- **Database Schema (`0008_phase9_trust_safety_moderation.py`):** Adds `reports`, `moderation_actions`, `moderation_appeals`, `user_blocks`, and `audit_events` (enforced as append-only via `trg_audit_events_no_update` and `trg_audit_events_no_delete` triggers).
-- **High-Severity Velocity Safeguard:** Reports with `reason_code IN ('doxxing_pii', 'threat')` receive `priority_score = 10`. Receiving `>= 3` distinct user reports within a rolling 30-minute window automatically transitions a `published` post/comment to `awaiting_review` (protective hold) and records a `system_auto_hold` action and audit event without permanently deleting the content or suspending the author.
-- **Privacy-Blind Moderation Queue (`/moderation/queue`):** Scopes access by role (community moderators for assigned `c/[slug]`, global moderators/admins platform-wide), strips private author and reporter identifiers on anonymous content, and supports `Escalate — Language Specialist Needed`.
-- **Appeals & Separation of Duties (`/moderation/appeals`):** Allows affected users to submit one structured appeal per moderation action and enforces backend separation of duties (`403 SEPARATION_OF_DUTIES_VIOLATION` if the original moderator attempts to decide their own appeal).
-- **User Blocking & Muting (`PUT /api/v1/users/{handle}/block`, `/settings/privacy`):** Enforces bidirectional interaction blocks (`403 INTERACTION_BLOCKED` on comments/votes/reactions) and per-viewer feed/search filtering for both `block` and `mute` while preserving anonymous post privacy.
+* Privacy-aware identity modes.
+* Session and account security.
+* Anonymous author protection.
+* Account recovery safeguards.
+* User data export.
+* Account deletion lifecycle.
 
-## Phase 10: Multilingual Experience, Localization & Derived Content Translation (`0009_phase10_translations`)
+### Application Security
 
-- **Database Schema (`0009_phase10_multilingual_translations.py`):** Adds `content_translations` keyed by `(source_type, source_id, target_locale, source_version_hash, provider_name)` where `source_version_hash` is the SHA-256 fingerprint of the canonical NFC-normalized source text.
-- **Complete 5-Locale UI Localization (`en`, `ml`, `hi`, `ta`, `es`):** Full JSON catalogs under `frontend/locales/{en,ml,hi,ta,es}/common.json` with 100% key parity and an accessible `UiLocaleSwitcher` in the navigation bar.
-- **On-Demand Non-Destructive Translation (`POST /api/v1/posts/{id}/translations`, `POST /api/v1/comments/{id}/translations`):** Translates eligible posts and comments via `TranslationProviderAdapter` (`LocalMockTranslationProvider` and `DisabledTranslationProvider`), invalidates cached translations automatically when source text is edited, enforces user blocks and moderation holds before serving cached translations, and preserves original content and anonymous author privacy.
+* Security response headers.
+* Content Security Policy.
+* CSRF trusted-origin enforcement.
+* Request-size restrictions.
+* Secure production startup validation.
+* Credential redaction in application logs.
+* Environment-based secret configuration.
 
-## Phase 11: Workplace Experiences, Resignation Stories & Privacy-Safe Aggregated Insights (`0010_phase11_workplace`)
+### Rate Limiting
 
-- **Database Schema (`0010_phase11_workplace_experiences.py`):** Adds `workplace_experience_details` (1:1 optional structured metadata linked to `posts.id`) and `workplace_insight_contributions` (`UNIQUE(user_id)` private structured contribution records completely separated from public narrative posts).
-- **Workplace Experiences & Resignation Stories (`/workplace/experiences`, `/workplace/resignations`):** Reuses the canonical `posts` lifecycle and 3-mode identity system (`pseudonymous`, `anonymous`, `professional`) with 12 experience categories and 13 controlled resignation-reason categories.
-- **Privacy-Safe Aggregation Engine (`/api/v1/workplace/insights`, `/insights/workplace`):** Computes statistical summaries exclusively from consented `workplace_insight_contributions` (`aggregation_consent = 1`), enforcing `n >= 10` distinct contributors for general metrics, `n >= 20` for sensitive metrics (`compensation_satisfaction` and `resignation_reasons`), complementary small-bucket suppression (`n < 3`), coarse sample-size banding (`10+`, `15+`, `20+`), and a maximum of 2 simultaneous filter dimensions with zero employer leaderboards.
+The backend supports:
 
+* In-memory rate limiting.
+* Redis-backed rate limiting.
+* Atomic Redis Lua operations.
+* Subject-key hashing.
+* Bounded key expiration.
+* Fail-closed behaviour when the configured Redis backend is unavailable.
 
-## Phase 12: Production Readiness, Security Hardening, Performance & Launch Verification
+Production configurations require Redis-backed rate limiting for multi-worker operation.
 
-- **Production Fail-Fast Startup Guard (`backend/app/config.py`):** Rejects startup when `APP_ENV=production` if `DATABASE_URL` is non-PostgreSQL or uses development credentials, if `SESSION_COOKIE_SECURE` is false, if `EMAIL_HMAC_PEPPER` or `EMAIL_ENCRYPTION_KEY_BASE64` uses development defaults, if `CORS_ORIGINS` is empty/wildcard/HTTP, or if `AI_CAPTION_PROVIDER`, `AI_IMAGE_PROVIDER`, or `TRANSLATION_PROVIDER` is set to `local_mock`. Disables `/api/v1/docs`, `/api/v1/redoc`, and `/api/v1/openapi.json` in production.
-- **HTTP Security Headers, Body-Size Guard & CSRF Trusted-Origin Enforcement (`backend/app/middleware/security_headers.py`, `backend/app/api/deps.py`, `frontend/next.config.ts`):** Enforces a 1 MB JSON request body limit (`413 PAYLOAD_TOO_LARGE`), attaches `Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, and conditional `Strict-Transport-Security`, and blocks state-changing requests from untrusted `Origin` headers (`403 UNTRUSTED_ORIGIN`).
-- **Liveness, Readiness & Redacted Operational Metrics (`GET /api/v1/health/live`, `GET /api/v1/health/ready`, `GET /api/v1/health/metrics`):** Verifies database `SELECT 1` connectivity and media storage readiness (`503` when degraded) and exposes privacy-safe HTTP latency percentiles (`p50`, `p95`), status class counters, rate-limit `429` counts, DB pool bounds, and `meme_jobs` worker queue counts.
-- **Worker Crash Recovery & CLI Runner (`backend/app/workers/meme_worker.py`, `backend/app/workers/runner.py`):** `recover_stale_generating_jobs()` re-queues or fails jobs left in `generating`/`validating` during an unexpected worker restart, and `python3 -m app.workers.runner` provides a production worker loop with graceful `SIGINT`/`SIGTERM` shutdown.
-- **Full-Lifecycle Account Deletion & Self-Service Data Export (`DELETE /api/v1/me`, `GET /api/v1/me/export`):** Scrubs comments, deletes private `workplace_insight_contributions` (removing deleted users from future k-anonymity cohorts), bookmarks, blocks, notifications, and unpublished meme assets while preserving immutable `audit_events`.
-- **Production Deployment, Backup Drill & Benchmark Tooling (`docker-compose.prod.yml`, `scripts/backup_restore_postgres.sh`, `scripts/performance_benchmark.py`, `docs/operations/PRODUCTION_READINESS_AND_RUNBOOKS.md`):** Reference production Compose topology, PostgreSQL `pg_dump`/`pg_restore` verification script, reproducible latency benchmark, and operational runbooks.
+### Moderation and Abuse Prevention
 
+* Reporting and appeals.
+* High-severity reporting safeguards.
+* User blocking and muting.
+* Privacy-blind moderation workflows.
+* Append-only moderation audit records.
+* Separation of duties.
 
-## Phase 12.1: Pre-Staging Hardening & Infrastructure Qualification
+### Data Privacy
 
-- **Shared Multi-Worker Redis Rate Limiting (`backend/app/core/rate_limit.py`, `backend/app/config.py`, `docker-compose.prod.yml`):** Introduces `RateLimitStore` with `InMemoryRateLimitStore` (`RATE_LIMIT_BACKEND=memory`) and `RedisRateLimitStore` (`RATE_LIMIT_BACKEND=redis`) backed by an atomic server-side Redis Lua script (`EVAL`), SHA-256 subject key hashing (`po:rl:{bucket}:{sha256}`), bounded TTLs (`PEXPIRE`), and a strict fail-closed policy (`503 RATE_LIMIT_BACKEND_UNAVAILABLE` when Redis is unreachable). Rejects `WEB_CONCURRENCY > 1` with `memory` rate limiting and requires `RATE_LIMIT_BACKEND=redis` in `production`.
-- **Separated Request-Size Policies & Anti-Bypass Stream Guard (`backend/app/middleware/security_headers.py`, `backend/app/api/v1/memes.py`):** Enforces a `1 MB` limit on JSON/standard requests (`413 PAYLOAD_TOO_LARGE`) and a `6 MB` multipart envelope (`413 UPLOAD_TOO_LARGE`) + `5 MB` inner image limit (`422 IMAGE_TOO_LARGE`) on `POST /api/v1/memes/upload`, counting streamed ASGI body chunks incrementally so missing or falsified `Content-Length` headers cannot bypass limits.
-- **24-Table Account Export & Deletion Lifecycle (`backend/app/modules/identity/service.py`):** Expands `GET /api/v1/me/export` to include all owner-scoped records (`account` with decrypted `recovery_email`, profiles, posts with `workplace_detail`, comments, votes, reactions, poll votes, bookmarks, community memberships, topic preferences, blocks/mutes by public handle, notifications, meme assets/jobs, submitted reports, appeals, and structured workplace contribution) and upgrades `DELETE /api/v1/me` to delete underlying media files from storage, purge cached `content_translations`, decrement `communities.member_count`, remove `workplace_insight_contributions`, and record a redacted append-only `account_self_deleted` audit event.
-- **Process-Aware Operational Metrics (`backend/app/core/metrics.py`, `GET /api/v1/health/metrics`):** Explicitly tags HTTP counters/percentiles with `collection_scope: "process_local"`, `is_cluster_wide`, `worker_pid`, and `configured_web_concurrency`, and tags `worker_queue` with `collection_scope: "database_global"`.
-- **Durable Object Storage Adapter (`backend/app/modules/memes/storage.py`):** Adds `S3CompatibleStorageAdapter` supporting AWS S3 and Cloudflare R2 (`STORAGE_BACKEND=s3|r2`) with AWS Signature Version 4 (`AWS4-HMAC-SHA256`), private ACLs (`x-amz-acl: private`), bounded timeouts, and time-limited presigned GET URLs alongside `LocalFilesystemStorageAdapter`.
-- **16-Step PostgreSQL 16 Staging Qualification & Hardened Backup/Restore (`scripts/qualify_postgres_staging.py`, `scripts/backup_restore_postgres.sh`, `scripts/performance_benchmark.py`):** Provides reproducible 16-step PostgreSQL 16 qualification, hardened `umask 077` / `pressure_out_restore_drill_*` backup-restore scripts, and configurable multi-threaded synthetic benchmarking.
+* Real-world identity is not required for public participation.
+* Anonymous identity information is protected from ordinary community views.
+* Workplace insights use consented structured contributions.
+* Minimum aggregation thresholds protect sensitive statistical categories.
+* Account deletion and export workflows are implemented in the identity module.
 
+**Important:** Production credentials, encryption keys, database passwords and external API keys must be supplied through secure deployment configuration. Never commit actual secrets.
 
-## Phase 12.2: Networked Staging Qualification & Eviction Hardening
+---
 
-- **Redis `noeviction` Policy & Wire-Protocol Qualification (`docker-compose.prod.yml`, `backend/app/core/rate_limit.py`):** Replaced `--maxmemory-policy volatile-ttl` with `--maxmemory-policy noeviction` on the dedicated rate-limiting Redis service so active rate-limit keys (which carry `PEXPIRE` TTLs) can never be silently evicted under memory pressure; `OOM` write errors fail closed with `503 RATE_LIMIT_BACKEND_UNAVAILABLE`. Verified `RedisRespClient` over real TCP loopback sockets (`LocalResp2TestServer`) across multiple workers and 20-thread bursts.
-- **Staging Safety Verifier (`scripts/qualify_postgres_staging.py`):** Added `verify_staging_safety_guards()` requiring `APP_ENV=staging`, rejecting `prod`/`production` database, Redis, or CORS identifiers, and enforcing `^pressure_out_restore_drill_[0-9]{8,16}$` on restore target names.
-- **S3/R2 Presigned URL Expiration & Log Redaction (`backend/app/modules/memes/storage.py`, `backend/app/logging_config.py`):** Canonicalized SigV4 object URI paths, added presigned URL expiration/tamper verification in `InMemoryS3Transport`, and expanded `logging_config.py` to scrub `X-Amz-Signature`, `X-Amz-Credential`, `X-Amz-Security-Token`, `s3_secret_access_key`, and `rediss?://` passwords.
+# 11. AI and External Provider Configuration
 
+The AI Meme Studio and translation systems use provider-neutral adapters.
 
-## Phase 12.3: Local Windows Setup & D: Drive Development Guide
+Supported architecture includes:
 
-For complete local Windows 10/11 setup instructions—including **`D:\PressureOut` storage configuration** to protect a low-space `C:` drive, `docker-compose.local.yml` (local PostgreSQL 16 on `127.0.0.1:54329` and Redis 7 with `noeviction` on `127.0.0.1:63799`), `.env.local.example`, the 8 PowerShell automation scripts in `scripts/windows/`, and the 35-step local end-to-end smoke runner (`scripts/run_local_smoke_35.py`)—see **[`docs/development/WINDOWS_LOCAL_DEVELOPMENT.md`](docs/development/WINDOWS_LOCAL_DEVELOPMENT.md)**.
+* Caption generation providers.
+* Image generation providers.
+* Translation providers.
+* Local mock providers.
+* Disabled-provider configurations.
+
+The application can use its local development functionality without requiring external AI API credentials.
+
+External provider integrations require their respective credentials and configuration.
+
+Local mock providers are intended for development and testing, not production operation.
+
+---
+
+# 12. Development Roadmap and Implementation Progress
+
+The repository documents the following development milestones.
+
+| Phase      | Area                         | Implementation Scope                                                               |
+| ---------- | ---------------------------- | ---------------------------------------------------------------------------------- |
+| Phase 1    | Product & Architecture       | Product requirements, architecture, database design and specifications             |
+| Phase 2    | Application Foundation       | Backend, frontend, database foundation, development setup and automated tests      |
+| Phase 3    | Authentication & Privacy     | Accounts, identity modes, authentication and privacy isolation                     |
+| Phase 4    | Social Posting               | Posts, publishing and social interaction foundations                               |
+| Phase 5    | Communities                  | Community creation, membership and rules                                           |
+| Phase 6    | Engagement                   | Comments, voting, reactions and notifications                                      |
+| Phase 7    | Feeds & Discovery            | Latest, Popular, Following, Explore, ranking and search                            |
+| Phase 8    | AI Meme Studio               | Templates, caption assistance, rendering and asynchronous generation workflows     |
+| Phase 9    | Trust & Safety               | Reporting, moderation, appeals, blocking and muting                                |
+| Phase 10   | Multilingual Experience      | Five locales, localization and content translation                                 |
+| Phase 11   | Workplace Experiences        | Workplace stories, resignation reasons and privacy-safe aggregated insights        |
+| Phase 12   | Production Hardening         | Security, performance, operational tooling and deployment qualification            |
+| Phase 12.1 | Infrastructure Qualification | Redis-backed rate limiting, request limits and PostgreSQL qualification            |
+| Phase 12.2 | Staging Qualification        | Redis eviction safeguards, networked qualification and object-storage verification |
+| Phase 12.3 | Windows Local Development    | Windows setup, D: drive configuration and local smoke testing                      |
+
+The repository contains source code, tests and documentation associated with these milestones.
+
+Implementation presence and development qualification should not be interpreted as confirmation of a live production deployment.
+
+---
+
+# 13. Documentation
+
+Detailed technical documentation is maintained under `docs/`.
+
+| Directory            | Documentation                                                            |
+| -------------------- | ------------------------------------------------------------------------ |
+| `docs/product/`      | Product requirements, MVP scope, user journeys and acceptance criteria   |
+| `docs/architecture/` | Frontend, backend, database, API, security, identity and AI architecture |
+| `docs/decisions/`    | Architecture decision records                                            |
+| `docs/diagrams/`     | System, database, identity and meme-generation diagrams                  |
+| `docs/roadmap/`      | Development phases, risks and testing strategy                           |
+| `docs/development/`  | Windows local development instructions                                   |
+| `docs/operations/`   | Production readiness, operational procedures and runbooks                |
+
+Some particularly useful documents:
+
+* [Product Requirements](docs/product/PRODUCT_REQUIREMENTS.md)
+* [System Architecture](docs/architecture/SYSTEM_ARCHITECTURE.md)
+* [Database Design](docs/architecture/DATABASE_DESIGN.md)
+* [API Specification](docs/architecture/API_SPECIFICATION.md)
+* [Identity and Privacy](docs/architecture/IDENTITY_AND_PRIVACY.md)
+* [AI Meme Studio](docs/architecture/AI_MEME_STUDIO.md)
+* [Security and Moderation](docs/architecture/SECURITY_AND_MODERATION.md)
+* [Multilingual Support](docs/architecture/MULTILINGUAL_SUPPORT.md)
+* [Windows Local Development](docs/development/WINDOWS_LOCAL_DEVELOPMENT.md)
+* [Production Readiness and Runbooks](docs/operations/PRODUCTION_READINESS_AND_RUNBOOKS.md)
+
+---
+
+# 14. Current Development Stage
+
+Pressure Out is being developed and qualified locally before moving toward public deployment.
+
+The current repository includes:
+
+* A modular FastAPI backend.
+* A Next.js frontend.
+* PostgreSQL database migrations.
+* Redis-backed infrastructure capabilities.
+* Privacy-aware identity and social features.
+* AI Meme Studio components.
+* Trust and safety functionality.
+* Five localization catalogs.
+* Workplace experiences and aggregated insights.
+* Docker Compose configurations.
+* Windows development automation.
+* Backup, restore and qualification tooling.
+* Automated backend and frontend tests.
+
+The production Compose configuration and operational documentation provide a foundation for future deployment planning.
+
+**Production hosting, public service operation and production infrastructure qualification remain separate milestones.**
+
+---
+
+# 15. Future Direction
+
+The broader vision is to evolve Pressure Out into a trusted global space for workplace expression and community-driven professional experiences.
+
+Potential future directions include:
+
+* Expanding language support.
+* Improving AI-assisted creative tools.
+* Enhancing workplace discussion and discovery.
+* Improving community participation.
+* Strengthening privacy and trust mechanisms.
+* Expanding aggregated workplace intelligence.
+* Completing deployment and operational qualification.
+* Building a sustainable platform around workplace expression.
+
+The long-term objective is to make workplace conversations more open, accessible and human without requiring people to compromise their privacy.
+
+---
+
+# 16. Project Repository
+
+**GitHub:**
+https://github.com/BibinBinoy777/pressure-out
+
+**Primary Branch:** `main`
+
+**Initial Release:** Pressure Out Phases 1–12.3
+
+---
+
+### Pressure Out
+
+**Your Work. Your Chaos. Your People.**
+
+*Work is serious. Talking about it doesn't have to be.*
+
+A space to speak freely, share experiences, laugh together and make workplace conversations more human.
