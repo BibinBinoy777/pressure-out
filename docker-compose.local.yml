@@ -1,0 +1,74 @@
+# =============================================================================
+# PRESSURE OUT — LOCAL WINDOWS DEVELOPMENT COMPOSE (docker-compose.local.yml)
+# =============================================================================
+# Dedicated local development infrastructure (PostgreSQL 16 + Redis 7).
+# Kept strictly separate from `docker-compose.prod.yml`.
+#
+# Security & Storage Rules:
+# - Binds ONLY to 127.0.0.1 (never exposed to public/LAN interfaces).
+# - Uses non-default host ports by default (54329 for PostgreSQL, 63799 for Redis)
+#   to avoid colliding with pre-existing Windows services on 5432 or 6379.
+# - Uses `--maxmemory-policy noeviction` on Redis so active rate-limit keys
+#   can never be silently evicted.
+# - Persists data in named volumes backed by Docker Desktop (configured on D:\)
+#   or bind-mounted under D:\PressureOut\.local-data.
+# =============================================================================
+
+name: pressure-out-local
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pressure-out-local-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${LOCAL_POSTGRES_USER:?LOCAL_POSTGRES_USER is required in .env.local}
+      POSTGRES_PASSWORD: ${LOCAL_POSTGRES_PASSWORD:?LOCAL_POSTGRES_PASSWORD is required in .env.local}
+      POSTGRES_DB: ${LOCAL_POSTGRES_DB:-pressure_out_local}
+    ports:
+      - "127.0.0.1:${LOCAL_POSTGRES_PORT:-54329}:5432"
+    volumes:
+      - pressure_out_local_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - pressure_out_local_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: pressure-out-local-redis
+    restart: unless-stopped
+    command: >
+      sh -c "redis-server
+      --requirepass \"$${LOCAL_REDIS_PASSWORD}\"
+      --maxmemory 256mb
+      --maxmemory-policy noeviction
+      --appendonly yes"
+    environment:
+      LOCAL_REDIS_PASSWORD: ${LOCAL_REDIS_PASSWORD:?LOCAL_REDIS_PASSWORD is required in .env.local}
+    ports:
+      - "127.0.0.1:${LOCAL_REDIS_PORT:-63799}:6379"
+    volumes:
+      - pressure_out_local_redisdata:/data
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$${LOCAL_REDIS_PASSWORD}\" redis-cli ping | grep -q PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - pressure_out_local_net
+
+volumes:
+  pressure_out_local_pgdata:
+    name: pressure_out_local_pgdata
+  pressure_out_local_redisdata:
+    name: pressure_out_local_redisdata
+
+networks:
+  pressure_out_local_net:
+    name: pressure_out_local_net
+    driver: bridge

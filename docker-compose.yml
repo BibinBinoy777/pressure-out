@@ -1,0 +1,92 @@
+name: pressure-out
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: pressure-out-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-po_dev_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-po_dev_local_only_password_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-pressure_out_dev}
+    ports:
+      # Bind only to loopback interface on host so PostgreSQL is never exposed publicly
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pressure_out_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-po_dev_user} -d $${POSTGRES_DB:-pressure_out_dev}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - pressure_out_net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pressure-out-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-po_dev_user}:${POSTGRES_PASSWORD:-po_dev_local_only_password_change_me}@db:5432/${POSTGRES_DB:-pressure_out_dev}
+      STORAGE_BACKEND: local
+      LOCAL_STORAGE_PATH: /app/storage/media
+      AI_CAPTION_PROVIDER: disabled
+      AI_IMAGE_PROVIDER: disabled
+      TRANSLATION_PROVIDER: disabled
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./storage/media:/app/storage/media
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - pressure_out_net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pressure-out-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      # Browser requests hit localhost:8000 on the host machine
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
+      # Server-Side Rendering (SSR) inside Docker uses the internal service hostname `backend`
+      INTERNAL_API_BASE_URL: http://backend:8000
+      NEXT_PUBLIC_DEFAULT_LOCALE: en
+    ports:
+      - "127.0.0.1:3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - pressure_out_net
+
+volumes:
+  pressure_out_pgdata:
+    name: pressure_out_pgdata
+
+networks:
+  pressure_out_net:
+    name: pressure_out_net
+    driver: bridge

@@ -1,0 +1,372 @@
+{
+  "brand": {
+    "name": "Pressure Out",
+    "tagline": "आपका काम। आपकी हलचल। आपके लोग।",
+    "secondaryTagline": "काम गंभीर है। उसके बारे में बात करना गंभीर होना ज़रूरी नहीं है।",
+    "phaseBadge": "चरण 11 — कार्यस्थल अनुभव और अंतर्दृष्टि"
+  },
+  "a11y": {
+    "skipToContent": "मुख्य सामग्री पर जाएं",
+    "mainNavigation": "मुख्य नेविगेशन",
+    "backendStatusRegion": "बैकएंड API कनेक्शन स्थिति"
+  },
+  "nav": {
+    "home": "होम फ़ीड",
+    "architecture": "आर्किटेक्चर",
+    "status": "सिस्टम स्थिति",
+    "login": "साइन इन करें",
+    "register": "छद्म नाम बनाएं",
+    "settings": "गोपनीयता और प्रोफ़ाइल",
+    "createPost": "पोस्ट बनाएं",
+    "communities": "समुदाय",
+    "saved": "सहेजे गए",
+    "notifications": "सूचनाएं",
+    "explore": "एक्सप्लोर करें",
+    "search": "खोजें",
+    "memeStudio": "AI मीम स्टूडियो",
+    "moderationQueue": "मॉडरेशन कतार",
+    "appeals": "अपील",
+    "workplaceExperiences": "अनुभव",
+    "resignations": "इस्तीफ़े की कहानियां",
+    "insights": "कार्यस्थल अंतर्दृष्टि",
+    "shareContribution": "योगदान दें"
+  },
+  "hero": {
+    "eyebrow": "कार्यस्थल सोशल प्लेटफ़ॉर्म",
+    "headline": "कामकाजी जीवन के अनफ़िल्टर्ड पहलू के लिए सोशल मंच।",
+    "description": "अपनी वास्तविक पहचान उजागर किए बिना कार्यस्थल के अनुभव, रैंट, वेतन चर्चा और AI मीम्स साझा करें।",
+    "foundationNote": "प्रेशर आउट बहुभाषी प्लेटफ़ॉर्म।"
+  },
+  "pillars": {
+    "sectionTitle": "Architectural Pillars Established for Upcoming Phases",
+    "items": {
+      "community": {
+        "title": "Workplace Communities & Discussions",
+        "description": "Topic-driven spaces for workplace rants, office humour, salary transparency, freshers' questions, and structured exit stories."
+      },
+      "identity": {
+        "title": "Per-Post Identity Control",
+        "description": "Participate using a pseudonymous handle, post anonymously to the community, or voluntarily attach unverified professional context per post."
+      },
+      "memeStudio": {
+        "title": "AI Meme Studio",
+        "description": "First-class template meme compositor and provider-neutral AI caption and image adapters with strict quotas and safety guardrails."
+      },
+      "multilingual": {
+        "title": "Multilingual by Design",
+        "description": "End-to-end UTF-8 Unicode preservation across English, Malayalam, Hindi, Tamil, and code-switched conversations."
+      }
+    }
+  },
+  "status": {
+    "heading": "Backend Foundation Connectivity (/api/v1/health)",
+    "checking": "Checking connection to the Pressure Out FastAPI backend...",
+    "onlineTitle": "Backend API Online",
+    "onlineDescription": "Connected to FastAPI service ({service}) on API {version}.",
+    "offlineTitle": "Backend API Currently Unreachable",
+    "offlineFallbackMessage": "Unable to reach the Pressure Out API service. Ensure the FastAPI backend is running on the configured URL and try again.",
+    "unexpectedFormatMessage": "The backend returned an unexpected response format. Please verify API version compatibility.",
+    "timeoutMessage": "The request to the Pressure Out API timed out. Please check service health and try again.",
+    "retryButton": "Re-check API Health",
+    "correlationLabel": "Correlation ID"
+  },
+  "footer": {
+    "summary": "Pressure Out — Phase 2 Project Foundation. Built with Next.js App Router, FastAPI, and PostgreSQL 16.",
+    "privacyNote": "No fake posts, fabricated metrics, or external tracking scripts are loaded in this foundation build."
+  },
+  "identity": {
+    "selectorLabel": "Select Display Identity Mode",
+    "modes": {
+      "pseudonymous": {
+        "label": "Pseudonymous (@handle)",
+        "description": "Displays your chosen Pressure Out handle and links to your public profile."
+      },
+      "anonymous": {
+        "label": "Anonymous to Community",
+        "description": "Displays 'Anonymous Member' with zero link to your handle or profile.",
+        "honestyReminder": "Privacy Reminder: While Pressure Out strips your handle and account ID from public responses, avoid typing unique project names, exact dates, or personal details that coworkers could recognize."
+      },
+      "professional": {
+        "label": "Professional Context (Voluntary)",
+        "description": "Displays your handle alongside your self-declared role, industry, and experience band.",
+        "unverifiedBadge": "Self-Declared • Unverified"
+      }
+    },
+    "anonymousMember": "Anonymous Member",
+    "anonymousOp": "Anonymous OP"
+  },
+  "auth": {
+    "registerTitle": "Create Your Pseudonymous Account",
+    "registerSubtitle": "No real name, employer verification, or work email required.",
+    "handleLabel": "Pseudonymous Handle",
+    "handleHint": "3–32 characters (letters, numbers, underscores). Never use your real name unless you want to.",
+    "passwordLabel": "Password",
+    "passwordHint": "At least 10 characters. Stored as a salted Scrypt cryptographic hash.",
+    "recoveryEmailLabel": "Optional Recovery Email",
+    "recoveryEmailHint": "Optional. Encrypted with AES-256-GCM at rest and never shown publicly.",
+    "submitRegister": "Create Pseudonymous Account",
+    "recoveryCodeNoticeTitle": "Save Your One-Time Backup Recovery Code",
+    "recoveryCodeNoticeBody": "Store this code safely. If you did not provide a recovery email, this code is the only way to reset a forgotten password.",
+    "loginTitle": "Sign In to Pressure Out",
+    "loginSubtitle": "Enter your pseudonymous handle and password.",
+    "submitLogin": "Sign In",
+    "recoveryTitle": "Reset Your Password",
+    "recoverySubtitle": "Use your one-time backup recovery code or email reset token.",
+    "recoveryCodeLabel": "Backup Recovery Code or Reset Token",
+    "newPasswordLabel": "New Password (min 10 chars)",
+    "submitRecovery": "Reset Password & Revoke Old Sessions"
+  },
+  "settings": {
+    "profileTitle": "Public Pseudonym & Voluntary Professional Profile",
+    "displayNameLabel": "Public Display Name (Optional)",
+    "bioLabel": "Public Bio (Optional, supports full Unicode)",
+    "professionalHeading": "Optional Professional Context (Voluntary & Unverified)",
+    "professionalDescription": "Configure your role and industry if you occasionally want to share career or salary advice with professional context.",
+    "roleTitleLabel": "Role Title (e.g., Senior Backend Engineer)",
+    "industryLabel": "Industry (e.g., FinTech, Healthcare, IT Services)",
+    "experienceBandLabel": "Experience Band",
+    "regionLabel": "Region Label (Optional, e.g., South India)",
+    "enableProfessionalLabel": "Enable Professional Profile badge option",
+    "saveProfileButton": "Save Profile Settings",
+    "privacyTitle": "Privacy, Default Identity & Account Controls",
+    "defaultIdentityHeading": "Default Per-Post Identity Mode",
+    "sessionsHeading": "Active Device Sessions",
+    "revokeAllSessionsButton": "Revoke All Active Sessions",
+    "deleteAccountHeading": "Delete & Anonymize Account",
+    "deleteAccountWarning": "Deleting your account immediately revokes all sessions, deletes your public and professional profiles, and scrubs your recovery credentials.",
+    "deleteAccountButton": "Permanently Delete My Account"
+  },
+  "posts": {
+    "composerTitle": "कार्यस्थल चर्चा शुरू करें",
+    "composerSubtitle": "Choose your post type, language, and per-post identity mode before publishing.",
+    "communityLabel": "Community Space",
+    "postTypeLabel": "Post Type",
+    "types": {
+      "discussion": "Discussion",
+      "question": "Question",
+      "rant": "Workplace Rant",
+      "story": "Office Story",
+      "meme": "Workplace Meme",
+      "poll": "Workplace Poll",
+      "advice_request": "Advice Request",
+      "workplace_experience": "Workplace Experience / Exit Story"
+    },
+    "languageLabel": "Content Language",
+    "languages": {
+      "en": "English (en)",
+      "ml": "Malayalam — മലയാളം (ml)",
+      "hi": "Hindi — हिन्दी (hi)",
+      "ta": "Tamil — தமிழ் (ta)",
+      "es": "Spanish — Español (es)",
+      "mul": "Mixed / Code-Switched — Hinglish, Manglish, Tanglish (mul)",
+      "und": "Other / Undetermined (und)"
+    },
+    "titleLabel": "Post Title",
+    "titleHint": "3–220 characters. Summarize your question, rant, or story clearly.",
+    "bodyLabel": "Post Body",
+    "bodyHint": "Up to 15,000 characters. Full Unicode and mixed-language text supported.",
+    "tagsLabel": "Topic Tags (Comma-separated, up to 5)",
+    "tagsHint": "Example: burnout, wfh, salary, appraisal",
+    "pollOptionsLabel": "Poll Options (2 to 8 distinct choices)",
+    "addPollOptionButton": "Add Option",
+    "publishButton": "पोस्ट प्रकाशित करें",
+    "editButton": "संपादित करें",
+    "deleteButton": "हटाएं",
+    "deletedNotice": "This post has been deleted by its author.",
+    "piiHardBlockTitle": "Pre-Publish Safety Guardrail: Sensitive Data Blocked",
+    "piiSoftWarningTitle": "Pre-Publish Privacy Reminder: Named Individual Detected",
+    "piiConfirmButton": "I Understand the Risk — Publish Anyway",
+    "pollVoteButton": "Submit Vote",
+    "pollTotalVotes": "{count} total votes"
+  },
+  "communities": {
+    "directoryTitle": "Workplace Communities",
+    "directorySubtitle": "Join topic-based spaces for workplace rants, corporate memes, salary transparency, tech careers, and freshers' questions.",
+    "searchPlaceholder": "Search communities by topic or keyword...",
+    "joinButton": "Join Community",
+    "joinedButton": "Joined (Leave)",
+    "memberCountLabel": "{count} members",
+    "postCountLabel": "{count} posts",
+    "rulesHeading": "Community Rules",
+    "createPostInCommunity": "Create Post in c/{slug}",
+    "emptyFeedMessage": "No posts in this community yet. Be the first to start a conversation!",
+    "restrictedBadge": "Restricted Space",
+    "bannedNotice": "You are restricted from posting in this community."
+  },
+  "engagement": {
+    "upvoteAria": "Upvote",
+    "downvoteAria": "Downvote",
+    "savePost": "Save",
+    "savedPost": "Saved",
+    "reactions": {
+      "relatable": "Relatable",
+      "laugh": "Laugh",
+      "support": "Support",
+      "oof": "Oof",
+      "respect": "Respect"
+    }
+  },
+  "comments": {
+    "sectionHeading": "Discussion Thread ({count})",
+    "composerPlaceholder": "Share your perspective, advice, or workplace humour...",
+    "submitButton": "Post Reply",
+    "replyButton": "Reply",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "loadMoreButton": "Load More Replies",
+    "emptyThread": "No comments yet. Start the discussion below!",
+    "opLockTitle": "Sticky Anonymous OP Protection Active",
+    "opLockDescription": "You published this post anonymously. Your reply is automatically locked to 'Anonymous OP' so you do not accidentally reveal your @handle.",
+    "opUnlockCheckbox": "I intentionally want to unlock and reveal my handle as the author of this post"
+  },
+  "notifications": {
+    "pageTitle": "Notifications & Activity Alerts",
+    "unreadBadge": "{count} unread",
+    "markAllReadButton": "Mark All as Read",
+    "emptyMessage": "You're all caught up! New replies to your posts and comments will appear here.",
+    "savedPageTitle": "Saved Workplace Posts",
+    "savedEmptyMessage": "You haven't bookmarked any posts yet."
+  },
+  "feed": {
+    "modes": {
+      "popular": "लोकप्रिय",
+      "latest": "नवीनतम",
+      "following": "फ़ॉलो किए गए"
+    },
+    "filterLanguageLabel": "भाषा फ़िल्टर",
+    "filterTypeLabel": "पोस्ट प्रकार",
+    "allLanguages": "सभी भाषाएं",
+    "allTypes": "सभी पोस्ट प्रकार",
+    "loadMoreButton": "और पोस्ट लोड करें",
+    "emptyFollowing": "अपनी फ़ॉलोइंग फ़ीड भरने के लिए समुदायों से जुड़ें।",
+    "rankingDisclaimer": "लोकप्रियता किसी दावे के सच होने का प्रमाण नहीं है।"
+  },
+  "explore": {
+    "pageTitle": "Explore Workplace Topics & Communities",
+    "pageSubtitle": "Discover trending workplace tags, active communities, and fresh conversations from growing spaces.",
+    "trendingTagsHeading": "Trending Workplace Tags",
+    "followTagButton": "Follow",
+    "muteTagButton": "Mute",
+    "freshPostsHeading": "Fresh Posts from Growing Communities",
+    "freshPostsSubtitle": "Spotlighting new conversations so early communities never face an empty feed.",
+    "featuredCommunitiesHeading": "Featured Workplace Spaces"
+  },
+  "search": {
+    "pageTitle": "Search Workplace Discussions",
+    "queryPlaceholder": "Search posts, rants, memes, or #tags in any script...",
+    "searchButton": "Search",
+    "noResults": "No matching public posts found. Try broadening your language or community filters."
+  },
+  "memeStudio": {
+    "pageTitle": "AI मीम स्टूडियो",
+    "pageSubtitle": "Turn everyday workplace chaos into relatable memes using copyright-safe templates, AI caption assistance, or custom AI image generation.",
+    "mockDisclosureBanner": "Local Mock AI Provider Active: AI caption and image suggestions in this environment are generated by the deterministic LocalMockAIProvider for offline verification.",
+    "aiDisabledBanner": "External AI providers are currently disabled. Template-based meme creation remains 100% functional.",
+    "templateGalleryHeading": "1. Choose a Workplace Template",
+    "captionEditorHeading": "2. Customize Captions & Script",
+    "captionAssistantHeading": "AI Caption Assistant",
+    "captionAssistantSubtitle": "Describe a workplace moment and get 3–4 punchline ideas.",
+    "scenarioPromptLabel": "Workplace Situation Prompt",
+    "scenarioPromptPlaceholder": "e.g., My manager scheduled a 4:55 PM Friday sync with no agenda...",
+    "toneLabel": "Humour Tone",
+    "tones": {
+      "sarcastic": "Sarcastic",
+      "wholesome": "Wholesome",
+      "dramatic": "Dramatic",
+      "absurd": "Absurd",
+      "deadpan": "Deadpan"
+    },
+    "suggestCaptionsButton": "Generate Caption Ideas",
+    "applySuggestionButton": "Use This Caption",
+    "renderTemplateButton": "टेम्पलेट मीम बनाएं",
+    "imageGenHeading": "Custom AI Workplace Image Generator",
+    "imageGenSubtitle": "Enqueue an asynchronous background job to generate a custom workplace illustration.",
+    "startImageJobButton": "Generate AI Meme Image",
+    "cancelJobButton": "Cancel Queued Job",
+    "retryJobButton": "Retry Generation",
+    "downloadButton": "मीम डाउनलोड करें",
+    "publishDialogHeading": "Publish Meme to Community",
+    "publishButton": "मीम पोस्ट प्रकाशित करें",
+    "altTextLabel": "Accessible Alt Text (Screen Readers)",
+    "altTextHint": "Describe the visual layout and caption so screen-reader users can enjoy the joke."
+  },
+  "moderation": {
+    "reportButton": "रिपोर्ट करें",
+    "reportModalTitle": "सुरक्षा या नीति रिपोर्ट सबमिट करें",
+    "reportModalSubtitle": "Reports help moderators review potential policy violations such as doxxing, threats, or targeted harassment. Submitting a report does not guarantee automatic removal of workplace criticism.",
+    "highSeverityVelocityNote": "High-Severity Safeguard: Reports for doxxing/PII or credible threats receive top priority (P10). If 3 distinct accounts report an item within 30 minutes, it is temporarily placed under a protective hold pending human review.",
+    "reasonLabel": "Select Policy Reason",
+    "reasons": {
+      "doxxing_pii": "Doxxing / Personal Contact Details (P10)",
+      "threat": "Credible Threat of Violence or Harm (P10)",
+      "harassment": "Targeted Harassment of a Private Individual",
+      "impersonation": "Malicious Impersonation",
+      "hate_speech": "Hate Speech",
+      "confidential_ip": "Confidential Credentials or Client Secrets",
+      "spam": "Spam or Coordinated Manipulation",
+      "misleading_allegation": "Unverified / Misleading Allegation",
+      "other": "Other Policy Concern"
+    },
+    "detailsLabel": "Additional Context (Optional, up to 1,000 chars)",
+    "submitReportButton": "रिपोर्ट सबमिट करें",
+    "submittedConfirmation": "Thank you. Your report has been recorded for moderator review.",
+    "queuePageTitle": "Privacy-Blind Moderator Triage Queue",
+    "queuePageSubtitle": "Review prioritized community reports without exposing anonymous author or reporter identities.",
+    "allegationBanner": "Assessment Reminder: A report is an allegation requiring human evaluation, not automatic proof of misconduct. Legitimate workplace criticism, rants, and salary discussions are protected.",
+    "protectiveHoldBadge": "Protective Hold Active (Awaiting Review)",
+    "openReportBadge": "Open Report (Content Published)",
+    "languageEscalatedBadge": "Escalated — Language Specialist Needed",
+    "escalateLanguageButton": "Escalate — Language Specialist Needed",
+    "appealsPageTitle": "Moderation Appeals & Independent Review",
+    "appealsPageSubtitle": "Review moderation actions on your content or submit a structured appeal for independent review by a different moderator.",
+    "separationOfDutiesNotice": "Separation of Duties Enforced: Because you issued the original moderation decision, another global moderator or administrator must review this appeal.",
+    "auditPageTitle": "Immutable Administrative Audit Trail",
+    "auditPageSubtitle": "Read-only security and moderation audit log (restricted to platform administrators). Append-only database triggers prevent modification or deletion of historical records.",
+    "blockButton": "Block Account",
+    "unblockButton": "Unblock",
+    "muteButton": "Mute Account",
+    "unmuteButton": "Unmute",
+    "blockedMutedHeading": "Blocked & Muted Accounts",
+    "blockedMutedDescription": "Blocking prevents direct comments, votes, and reactions between two accounts. Muting hides an account's posts from your personal feeds without penalizing them globally."
+  },
+  "localeSwitcher": {
+    "ariaLabel": "इंटरफ़ेस भाषा चुनें",
+    "label": "इंटरफ़ेस भाषा",
+    "separateFromContentHint": "इंटरफ़ेस भाषा आपके सामग्री-भाषा फ़ीड फ़िल्टर से अलग है।"
+  },
+  "translations": {
+    "translateButton": "{locale} में अनुवाद करें",
+    "translatingStatus": "सामग्री का अनुवाद हो रहा है...",
+    "showOriginalButton": "मूल पाठ दिखाएं",
+    "showTranslationButton": "अनुवाद दिखाएं",
+    "translatedFromKnown": "{source} से {target} में अनुवादित",
+    "translatedFromUncertain": "मिश्रित / अज्ञात भाषा से {target} में अनुवादित",
+    "mockPreviewBadge": "लोकल मॉक अनुवाद पूर्वावलोकन",
+    "unavailableMessage": "इस सामग्री के लिए अनुवाद अभी उपलब्ध नहीं है। मूल पोस्ट ऊपर प्रदर्शित है।",
+    "retryButton": "पुनः प्रयास करें",
+    "originalPreservedNotice": "व्युत्पन्न अनुवाद — मूल पोस्ट सुरक्षित और अपरिवर्तित है।"
+  },
+  "workplace": {
+    "experiencesTitle": "कार्यस्थल के अनुभव",
+    "experiencesSubtitle": "प्रबंधन, कार्य संस्कृति, रिमोट वर्क और करियर विकास के बारे में वास्तविक कहानियां।",
+    "resignationsTitle": "इस्तीफ़े की कहानियां और करियर बदलाव",
+    "resignationsSubtitle": "लोग नौकरी क्यों छोड़ते हैं और उन्होंने क्या सीखा — गुमनाम या छद्म नाम से साझा करें।",
+    "safetyReminder": "सुरक्षा अनुस्मारक: व्यक्तिगत संपर्क विवरण, निजी कर्मचारी रिकॉर्ड या गोपनीय कंपनी जानकारी शामिल न करें।",
+    "shareContributionTitle": "संरचित कार्यस्थल योगदान साझा करें",
+    "shareContributionSubtitle": "व्यक्तिगत उत्तरों को उजागर किए बिना कार्यस्थल पैटर्न को समझने में मदद करें।",
+    "consentHeading": "आपके संरचित योगदान का उपयोग कैसे किया जाता है",
+    "consentBullet1": "आपके उत्तर आपके सार्वजनिक पोस्ट और हैंडल से अलग रखे जाते हैं।",
+    "consentBullet2": "व्यक्तिगत उत्तर कभी भी सार्वजनिक रूप से प्रदर्शित नहीं किए जाते हैं।",
+    "consentBullet3": "परिणाम केवल तभी दिखाए जाते हैं जब कम से कम 10 अलग-अलग योगदानकर्ता (संवेदनशील मेट्रिक्स के लिए 20) हों।",
+    "consentBullet4": "सभी योगदान स्व-रिपोर्ट किए गए हैं और आप उन्हें कभी भी संपादित या हटा सकते हैं।",
+    "consentCheckboxLabel": "मैं अपने संरचित उत्तरों को गोपनीयता-सुरक्षित कार्यस्थल अंतर्दृष्टि में शामिल करने की स्पष्ट सहमति देता हूँ।",
+    "submitContributionButton": "संरचित योगदान सहेजें",
+    "withdrawConsentButton": "सहमति वापस लें",
+    "deleteContributionButton": "मेरा योगदान हटाएं",
+    "insightsPageTitle": "गोपनीयता-सुरक्षित कार्यस्थल अंतर्दृष्टि",
+    "insightsPageSubtitle": "सहमति प्राप्त संरचित योगदानों से प्राप्त सांख्यिकीय सारांश — बिना किसी कंपनी लीडरबोर्ड के।",
+    "insufficientDataMessage": "इस समूह के लिए गोपनीयता-सुरक्षित परिणाम दिखाने हेतु अभी पर्याप्त योगदान नहीं हैं।",
+    "selfReportedBadge": "स्व-रिपोर्ट किया गया • असत्यापित",
+    "methodologyTitle": "कार्यप्रणाली और गोपनीयता सुरक्षा"
+  }
+}

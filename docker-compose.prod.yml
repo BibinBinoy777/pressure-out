@@ -1,0 +1,168 @@
+# Production & Staging Reference Deployment Topology for Pressure Out (Phase 12.1)
+# Enforces:
+# - Non-root container execution (10001:10001)
+# - Internal-only Redis 7 service with requirepass authentication and --maxmemory-policy noeviction
+# - Explicit secret injection (no hardcoded credentials)
+# - Consistent WEB_CONCURRENCY=2 paired with RATE_LIMIT_BACKEND=redis and RATE_LIMIT_FAIL_CLOSED=true
+# - Configurable STORAGE_BACKEND (local shared volume for single-node staging or s3/r2 for multi-node)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-pressure_out}
+    volumes:
+      - pressure_out_prod_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB:-pressure_out}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2G
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: >
+      sh -c "redis-server
+      --requirepass \"$${REDIS_PASSWORD}\"
+      --maxmemory 256mb
+      --maxmemory-policy noeviction
+      --save \"\"
+      --appendonly no"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$${REDIS_PASSWORD}\" redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 384M
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    user: "10001:10001"
+    command: >
+      sh -c "alembic upgrade head &&
+             python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers $${WEB_CONCURRENCY:-2} --no-access-log"
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-2}
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      RATE_LIMIT_BACKEND: redis
+      REDIS_URL: ${REDIS_URL:?REDIS_URL is required}
+      REDIS_SOCKET_TIMEOUT_SECONDS: ${REDIS_SOCKET_TIMEOUT_SECONDS:-2.0}
+      RATE_LIMIT_FAIL_CLOSED: "true"
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS is required}
+      SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-__Host-po_session}
+      SESSION_COOKIE_SECURE: "true"
+      EMAIL_HMAC_PEPPER: ${EMAIL_HMAC_PEPPER:?EMAIL_HMAC_PEPPER is required}
+      EMAIL_ENCRYPTION_KEY_BASE64: ${EMAIL_ENCRYPTION_KEY_BASE64:?EMAIL_ENCRYPTION_KEY_BASE64 is required}
+      STORAGE_BACKEND: ${STORAGE_BACKEND:-local}
+      LOCAL_STORAGE_PATH: /var/lib/pressure-out/media
+      S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-}
+      S3_REGION: ${S3_REGION:-auto}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
+      AI_CAPTION_PROVIDER: ${AI_CAPTION_PROVIDER:-disabled}
+      AI_IMAGE_PROVIDER: ${AI_IMAGE_PROVIDER:-disabled}
+      TRANSLATION_PROVIDER: ${TRANSLATION_PROVIDER:-disabled}
+    volumes:
+      - pressure_out_prod_media:/var/lib/pressure-out/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready', timeout=4)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1536M
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    user: "10001:10001"
+    command: ["python3", "-m", "app.workers.runner"]
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      WEB_CONCURRENCY: "1"
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      RATE_LIMIT_BACKEND: redis
+      REDIS_URL: ${REDIS_URL:?REDIS_URL is required}
+      RATE_LIMIT_FAIL_CLOSED: "true"
+      SESSION_COOKIE_SECURE: "true"
+      EMAIL_HMAC_PEPPER: ${EMAIL_HMAC_PEPPER:?EMAIL_HMAC_PEPPER is required}
+      EMAIL_ENCRYPTION_KEY_BASE64: ${EMAIL_ENCRYPTION_KEY_BASE64:?EMAIL_ENCRYPTION_KEY_BASE64 is required}
+      STORAGE_BACKEND: ${STORAGE_BACKEND:-local}
+      LOCAL_STORAGE_PATH: /var/lib/pressure-out/media
+      S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-}
+      S3_REGION: ${S3_REGION:-auto}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
+      AI_CAPTION_PROVIDER: ${AI_CAPTION_PROVIDER:-disabled}
+      AI_IMAGE_PROVIDER: ${AI_IMAGE_PROVIDER:-disabled}
+      TRANSLATION_PROVIDER: ${TRANSLATION_PROVIDER:-disabled}
+    volumes:
+      - pressure_out_prod_media:/var/lib/pressure-out/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    user: "10001:10001"
+    command: ["npm", "run", "start"]
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:?NEXT_PUBLIC_API_BASE_URL is required}
+      INTERNAL_API_BASE_URL: http://backend:8000
+      NEXT_PUBLIC_DEFAULT_LOCALE: ${NEXT_PUBLIC_DEFAULT_LOCALE:-en}
+    depends_on:
+      backend:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+
+volumes:
+  pressure_out_prod_pgdata:
+  pressure_out_prod_media:

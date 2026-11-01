@@ -1,0 +1,37 @@
+{
+  "name": "pressure-out-frontend",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Pressure Out \u2014 Next.js App Router Frontend Foundation (Phase 2)",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint app components lib tests",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:vm": "node --test tests/vm-foundation.test.mjs"
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/node": "^20.14.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^15.0.0",
+    "jsdom": "^25.0.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

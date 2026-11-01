@@ -1,0 +1,78 @@
+# =============================================================================
+# PRESSURE OUT — GIT IGNORE POLICY (Phases 1–12.3)
+# =============================================================================
+
+# Environment & Secrets (NEVER commit real credentials)
+.env
+.env.local
+.env.*
+!.env.example
+!.env.local.example
+
+# Private Certificates & Keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Python / Backend Virtual Environments & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+backend/.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node / Frontend Dependencies & Build Outputs
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+out/
+coverage/
+next-env.d.ts
+*.tsbuildinfo
+.vercel/
+
+# Windows D: Drive Local Caches, Data, Logs & Backups
+.cache/
+.local-data/
+logs/
+*.log
+tmp/
+temp/
+
+# Database Files, Dumps & Redis Persistence
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.dump.sha256
+*.sql
+*.rdb
+dump.rdb
+appendonly.aof*
+postgres_data/
+
+# Local Media Storage & Uploaded Content (keep directory via .gitkeep)
+storage/media/*
+!storage/media/.gitkeep
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
